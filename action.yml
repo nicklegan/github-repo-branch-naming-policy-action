@@ -1,0 +1,21 @@
+name: GitHub Repository Branch Naming Policy Action
+description: 'A GitHub Action which prevents pull requests from being merged and sends issue notifications.'
+
+inputs:
+  token:
+    description: 'A personal access token with repo permission.'
+    required: true
+  regex:
+    description: 'A regex string matching a correct branch naming convention.'
+    required: true
+  flags:
+    description: 'Flag for branch naming regex string. e.g. i for case-insensitive'
+    required: false
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'check-circle'
+  color: 'blue'
