@@ -15,6 +15,8 @@ const regex = core.getInput('regex')
 const flags = core.getInput('flags') || 'i'
 const re = new RegExp(regex, flags)
 
+const delete_issue = core.getInput('delete') || ''
+
 ;(async () => {
   try {
     if (event_name === 'create' && ref_type === 'branch' && re.test(ref) === false) {
@@ -71,20 +73,38 @@ const re = new RegExp(regex, flags)
             }
 
             if (issue.title === `:no_good: Branch \`${ref}\` has an incorrect name`) {
-              try {
-                const query = /* GraphQL */ `
-                  mutation ($issueId: ID!) {
-                    deleteIssue(input: { issueId: $issueId }) {
-                      clientMutationId
+              if (delete_issue === 'true') {
+                try {
+                  const query = /* GraphQL */ `
+                    mutation ($issueId: ID!) {
+                      deleteIssue(input: { issueId: $issueId }) {
+                        clientMutationId
+                      }
                     }
-                  }
-                `
-                dataJSON = await octokit.graphql({
-                  query,
-                  issueId: issue.id
-                })
-              } catch (error) {
-                core.setFailed(error.message)
+                  `
+                  dataJSON = await octokit.graphql({
+                    query,
+                    issueId: issue.id
+                  })
+                } catch (error) {
+                  core.setFailed(error.message)
+                }
+              } else {
+                try {
+                  const query = /* GraphQL */ `
+                    mutation ($issueId: ID!) {
+                      closeIssue(input: { issueId: $issueId }) {
+                        clientMutationId
+                      }
+                    }
+                  `
+                  dataJSON = await octokit.graphql({
+                    query,
+                    issueId: issue.id
+                  })
+                } catch (error) {
+                  core.setFailed(error.message)
+                }
               }
             }
           }

@@ -1,5 +1,5 @@
-name: GitHub Repository Branch Naming Policy Action
-description: 'A GitHub Action which prevents pull requests from being merged and sends issue notifications.'
+name: GitHub Repo Branch Naming Policy Action
+description: 'A GitHub Action which prevents pull requests from being merged and sends issue notifications if a branch is not following the configured naming convention.'
 
 inputs:
   token:
@@ -9,7 +9,10 @@ inputs:
     description: 'A regex string matching a correct branch naming convention.'
     required: true
   flags:
-    description: 'Flag for branch naming regex string. e.g. i for case-insensitive'
+    description: 'Flag for branch naming regex string. e.g. i for case-insensitive.'
+    required: false
+  delete:
+    description: 'An option to delete the opened notification issue instead of only closing it.'
     required: false
 
 runs:
