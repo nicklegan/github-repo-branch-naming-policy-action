@@ -6,7 +6,7 @@
 
 - When a branch is created or renamed, the name of the branch will be verified against the configured naming convention. If the name of the branch does not follow the configured naming convention, an issue with instructions including an @mention mentioning the creator will be opened.
 
-- Once the incorrect name of the branch is resolved or the branch is deleted, the opened notification issue will be deleted.
+- Once the incorrect name of the branch is resolved or the branch is deleted, the opened notification issue will be closed or optionally being deleted.
 
 ## Usage
 
@@ -29,30 +29,34 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run Branch Naming Policy Action
-        uses: nicklegan/github-repo-branch-naming-policy-action@v1.0.0
+        uses: nicklegan/github-repo-branch-naming-policy-action@v1.1.0
         if: github.ref_type == 'branch' || github.ref_type == 'pull_request'
         with:
-          token: ${{ secrets.REPO_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           regex: '^([a-z0-9]+)-([a-z0-9]+)$'
         # flags: i
+        # token: ${{ secrets.REPO_TOKEN }}
+        # delete: true
 ```
 
 ## GitHub secrets
 
-| Name                 | Value                                   | Required |
-| :------------------- | :-------------------------------------- | :------- |
-| `REPO_TOKEN`         | A `repo` scoped [Personal Access Token] | `true`   |
-| `ACTIONS_STEP_DEBUG` | `true` [Enables diagnostic logging]     | `false`  |
+| Name                 | Value                                                                       | Location                     | Required |
+| :------------------- | :-------------------------------------------------------------------------- | :--------------------------- | :------- |
+| `REPO_TOKEN`         | An optional `repo` scoped [Personal Access Token] if the delete flag is set | [workflow.yml]               | `false`  |
+| `ACTIONS_STEP_DEBUG` | `true`                                                                      | [Enables diagnostic logging] | `false`  |
 
+[workflow.yml]: #Usage 'Usage'
 [personal access token]: https://github.com/settings/tokens/new?scopes=repo&description=GitHub+Repository+Branch+Naming+Policy+Action 'Personal Access Token'
 [enables diagnostic logging]: https://docs.github.com/actions/managing-workflow-runs/enabling-debug-logging#enabling-runner-diagnostic-logging 'Enabling runner diagnostic logging'
 
 ## Action inputs
 
-| Name    | Description                                                      | Default                     | Required |
-| :------ | :--------------------------------------------------------------- | :-------------------------- | :------- |
-| `regex` | A regex string matching correct repo naming conventions          | `^([a-z0-9]+)-([a-z0-9]+)$` | `true`   |
-| `flags` | Flag for repo naming regex string. e.g. 'i' for case-insensitive | `i`                         | `false`  |
+| Name     | Description                                                                                                               | Default                     | Required |
+| :------- | :------------------------------------------------------------------------------------------------------------------------ | :-------------------------- | :------- |
+| `regex`  | A regex string matching correct repo naming conventions                                                                   | `^([a-z0-9]+)-([a-z0-9]+)$` | `true`   |
+| `flags`  | Flag for repo naming regex string. e.g. `i` for case-insensitive                                                          | `i`                         | `false`  |
+| `delete` | Deletes the issue instead of closing it when the branch name is resolved (requires a higher `repo` scoped workflow token) | `false`                     | `false`  |
 
 ## Regex examples
 
