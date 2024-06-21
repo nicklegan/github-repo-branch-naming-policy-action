@@ -29,7 +29,7 @@ const delete_issue = core.getInput('delete') || ''
       })
     }
     if (eventPayload.pull_request && re.test(eventPayload.pull_request.head.ref) === false) {
-      core.setFailed(`The head branch of pull request ${eventPayload.pull_request.number} has an incorrent name. Please update the branch name to the approved regex naming convention format. Regex: ${regex} Flags: ${flags}`)
+      core.setFailed(`The head branch of pull request ${eventPayload.pull_request.number} has an incorrect name. Please update the branch name to the approved regex naming convention format. Regex: ${regex} Flags: ${flags}`)
     }
     if (event_name === 'delete' && ref_type === 'branch' && re.test(ref) === false) {
       try {
